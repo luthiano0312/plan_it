@@ -1,7 +1,7 @@
 import { api } from './client'
 import type { PlanItem, TimeSession } from './types'
 
-export type TimerSession = TimeSession & { item?: PlanItem }
+export type TimerSession = TimeSession & { item_id: number; item?: PlanItem }
 
 /** Inicia o cronômetro no item (fecha qualquer sessão aberta alheia). */
 export function startTimer(itemId: number): Promise<TimerSession> {

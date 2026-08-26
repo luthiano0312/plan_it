@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router'
 import Layout from './components/Layout'
+import ItemPage from './pages/ItemPage'
 import NowPage from './pages/NowPage'
 
 function EmConstrucao() {
@@ -13,7 +14,7 @@ export default function App() {
         <Route index element={<NowPage />} />
         <Route path="novo" element={<EmConstrucao />} />
         <Route path="items" element={<EmConstrucao />} />
-        <Route path="items/:id" element={<EmConstrucao />} />
+        <Route path="items/:id" element={<ItemPage />} />
       </Route>
     </Routes>
   )
