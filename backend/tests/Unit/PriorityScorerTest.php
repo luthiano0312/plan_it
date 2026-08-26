@@ -72,6 +72,18 @@ class PriorityScorerTest extends TestCase
         $this->assertGreaterThan($this->scorer()->score($dificil), $this->scorer()->score($facil));
     }
 
+    public function test_empate_de_manual_priority_desempata_pelo_score(): void
+    {
+        // inserção proposital: menor score primeiro, para a ordem estável do
+        // banco não mascarar a ausência de desempate
+        $dificil = Item::factory()->create(['title' => 'dificil', 'manual_priority' => 1, 'effort' => 5]);
+        $facil = Item::factory()->create(['title' => 'facil', 'manual_priority' => 1, 'effort' => 1]);
+
+        $titulos = $this->scorer()->shortlist()->pluck('title');
+
+        $this->assertEquals(['facil', 'dificil'], $titulos->all());
+    }
+
     public function test_shortlist_exclui_projeto_com_passos_pendentes_e_limita_tamanho(): void
     {
         $projeto = Item::factory()->create();

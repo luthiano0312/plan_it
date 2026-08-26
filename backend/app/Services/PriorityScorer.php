@@ -59,28 +59,17 @@ class PriorityScorer
     }
 
     /**
-     * Acionáveis ordenados por manual_priority ASC (nulos por último) e,
-     * entre os manuais-empatados/automáticos, score DESC.
+     * Acionáveis ordenados por manual_priority ASC com nulos tratados como
+     * +∞ (por último); empates de manual_priority desempatam por score DESC.
      */
     public function shortlist(?int $limit = null): Collection
     {
         return Item::actionable()
             ->get()
             ->each(fn (Item $item) => $item->score = $this->score($item))
-            ->sort(function (Item $a, Item $b) {
-                if ($a->manual_priority !== null || $b->manual_priority !== null) {
-                    if ($a->manual_priority === null) {
-                        return 1;
-                    }
-                    if ($b->manual_priority === null) {
-                        return -1;
-                    }
-
-                    return $a->manual_priority <=> $b->manual_priority;
-                }
-
-                return $b->score <=> $a->score;
-            })
+            ->sort(fn (Item $a, Item $b) =>
+                (($a->manual_priority ?? PHP_FLOAT_MAX) <=> ($b->manual_priority ?? PHP_FLOAT_MAX))
+                    ?: ($b->score <=> $a->score))
             ->take($limit ?? $this->defaultShortlistSize)
             ->values();
     }
