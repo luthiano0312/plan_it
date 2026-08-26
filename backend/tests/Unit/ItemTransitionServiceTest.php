@@ -6,6 +6,7 @@ use App\Enums\ItemStatus;
 use App\Models\Item;
 use App\Services\ItemTransitionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class ItemTransitionServiceTest extends TestCase
@@ -63,6 +64,24 @@ class ItemTransitionServiceTest extends TestCase
 
         $this->assertEquals(ItemStatus::Concluido, $projeto->refresh()->status);
         $this->assertEquals(ItemStatus::Pendente, $passo->refresh()->status);
+    }
+
+    public function test_completar_item_ja_concluido_preserva_completed_at_original(): void
+    {
+        Carbon::setTestNow('2026-08-25 10:00:00');
+        $item = Item::factory()->create();
+        $service = $this->transitions();
+        $service->complete($item);
+        $original = $item->refresh()->completed_at;
+
+        Carbon::setTestNow('2026-08-25 11:00:00');
+        $service->complete($item); // segunda conclusão sem reabertura no meio
+
+        $this->assertNotNull($original);
+        $this->assertEquals(
+            $original->format('Y-m-d H:i:s'),
+            $item->refresh()->completed_at->format('Y-m-d H:i:s'),
+        );
     }
 
     public function test_mark_in_progress_so_afeta_item_pendente(): void

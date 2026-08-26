@@ -14,6 +14,15 @@ class Item extends Model
 {
     use HasFactory;
 
+    /**
+     * Defaults em memória espelhando a migration — instâncias recém-criadas
+     * sem esses campos não ficam com atributos nulos (mesma raiz do bug da T4).
+     */
+    protected $attributes = [
+        'status' => 'pendente',
+        'effort' => 3,
+    ];
+
     protected $fillable = [
         'title',
         'description',

@@ -20,10 +20,14 @@ class ItemTransitionService
 
     public function complete(Item $item): Item
     {
-        $item->forceFill([
-            'status' => ItemStatus::Concluido,
-            'completed_at' => now(),
-        ])->save();
+        // primeira conclusão vence: concluir item JÁ concluído (sem reabertura
+        // no meio) preserva o completed_at original
+        if ($item->status !== ItemStatus::Concluido) {
+            $item->forceFill([
+                'status' => ItemStatus::Concluido,
+                'completed_at' => now(),
+            ])->save();
+        }
 
         $this->propagateCompletion($item);
 
