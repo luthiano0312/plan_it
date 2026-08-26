@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router'
 import Layout from './components/Layout'
+import NowPage from './pages/NowPage'
 
 function EmConstrucao() {
   return <p>Página em construção.</p>
@@ -9,7 +10,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<EmConstrucao />} />
+        <Route index element={<NowPage />} />
         <Route path="novo" element={<EmConstrucao />} />
         <Route path="items" element={<EmConstrucao />} />
         <Route path="items/:id" element={<EmConstrucao />} />
