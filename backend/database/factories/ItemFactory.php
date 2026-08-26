@@ -16,8 +16,10 @@ class ItemFactory extends Factory
         return [
             'title' => fake()->sentence(),
             'effort' => fake()->numberBetween(1, 5),
+            // explícito para instâncias recém-criadas terem o atributo em
+            // memória (o default da migration só existe no banco)
+            'status' => ItemStatus::Pendente,
             // description, parent_id, due_date e manual_priority ficam null/default.
-            // status usa o default 'pendente' da migration.
         ];
     }
 
